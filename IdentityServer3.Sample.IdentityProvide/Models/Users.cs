@@ -17,8 +17,8 @@ namespace IdentityServer3.Sample.IdentityProvide.Models
         {
             new InMemoryUser
             {
-                Username = "bob",
-                Password = "secret",
+                Username = "Sky",
+                Password = "12345",
                 Subject = "1",
 
                 //Claims = new[]

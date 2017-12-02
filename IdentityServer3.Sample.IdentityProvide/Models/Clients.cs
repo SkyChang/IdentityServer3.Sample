@@ -28,8 +28,28 @@ namespace IdentityServer3.Sample.IdentityProvide.Models
                 {
                     "http://localhost:28545/"
                 },
-
+                // 登出時往返
+                 PostLogoutRedirectUris = new List<string>
+                {
+                    "http://localhost:28545/"
+                },
                 AllowAccessToAllScopes = true
+            },
+            // 提供 IdentityServer3.Sample.Api 使用
+            new Client
+            {
+                ClientName = "MVC Client (service communication)",
+                ClientId = "mvc_service",
+                Flow = Flows.ClientCredentials,
+
+                ClientSecrets = new List<Secret>
+                {
+                    new Secret("secret".Sha256())
+                },
+                AllowedScopes = new List<string>
+                {
+                    "sampleApi"
+                }
             }
         };
         }

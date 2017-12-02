@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using IdentityServer3.Core;
 using System.Security.Claims;
 using Microsoft.Owin.Security;
+using Microsoft.IdentityModel.Protocols;
 
 [assembly: OwinStartup(typeof(IdentityServer3.Sample.Web.Startup))]
 
@@ -31,10 +32,10 @@ namespace IdentityServer3.Sample.Web
             {
                 Authority = "https://localhost:44365/identity",
 
-                Scope = "openid profile roles",
+                Scope = "openid profile roles sampleApi",
                 ClientId = "mvc",
                 RedirectUri = "http://localhost:28545/",
-                ResponseType = "id_token",
+                ResponseType = "id_token token",
 
                 SignInAsAuthenticationType = "Cookies",
                 UseTokenLifetime = false,
@@ -63,10 +64,26 @@ namespace IdentityServer3.Sample.Web
 
                         // add some other app specific claim
                         nid.AddClaim(new Claim("app_specific", "some data"));
-
+                        nid.AddClaim(new Claim("id_token", n.ProtocolMessage.IdToken));
                         n.AuthenticationTicket = new AuthenticationTicket(
                             nid,
                             n.AuthenticationTicket.Properties);
+
+                        return Task.FromResult(0);
+                    },
+
+                    // 登出事件的處理
+                    RedirectToIdentityProvider = n =>
+                    {
+                        if (n.ProtocolMessage.RequestType == OpenIdConnectRequestType.LogoutRequest)
+                        {
+                            var idTokenHint = n.OwinContext.Authentication.User.FindFirst("id_token");
+
+                            if (idTokenHint != null)
+                            {
+                                n.ProtocolMessage.IdTokenHint = idTokenHint.Value;
+                            }
+                        }
 
                         return Task.FromResult(0);
                     }

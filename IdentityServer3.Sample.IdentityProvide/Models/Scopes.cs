@@ -6,7 +6,6 @@ using System.Web;
 
 namespace IdentityServer3.Sample.IdentityProvide.Models
 {
-    // 定義有提供資料的範圍
     public static class Scopes
     {
         public static IEnumerable<Scope> Get()
@@ -22,6 +21,14 @@ namespace IdentityServer3.Sample.IdentityProvide.Models
                     {
                         new ScopeClaim("role")
                     }
+                },
+                new Scope
+                {
+                    Enabled = true,
+                    DisplayName = "Sample API",
+                    Name = "sampleApi",
+                    Description = "Access to a sample API",
+                    Type = ScopeType.Resource
                 }
             };
 
